@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "RUS");
 	errno_t err;
+	clock_t start, end;
 	int m, i = 0, *count, j, n;
 	char **text, *filename, tmp;
 	filename = (char*)malloc(sizeof(char));
@@ -48,12 +49,30 @@ int main(int argc, char *argv[])
 			}
 			count = (int*)malloc(m * sizeof(int));
 			ScanFile(b, text, count);
-			Sort(text, count, m);
+
+			/*for (i = 0; i < m; i++)
+			{
+				printf("%d ", count[i]);
+			}*/
+			//printf("\n");
+			start = clock();
+			//Sort(text, count, m);
+			quickSort(count, 0, m - 1, text);
+			end = clock();
+			
+			/*for (i = 0; i < m; i++)
+			{
+				printf("%d ", count[i]);
+			}*/
+			
 			printf("Восстановленный текст:\n");
-			for (i = 0; i < m; i++)
+			/*for (i = 0; i < m; i++)
 			{
 				printf("%s\n", text[i]);
-			}
+			}*/
+
+			printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
+
 			for (i = 0; i < m; i++)
 			{
 				free(text[i]);
@@ -97,12 +116,17 @@ int main(int argc, char *argv[])
 				}
 				count = (int*)malloc(m * sizeof(int));
 				ScanFile(b, text, count);
-				Sort(text, count, m);
+
+				start = clock();
+				quickSort(count, 0, m - 1, text);
+				end = clock();
+				
 				printf("Восстановленный текст:\n");
 				for (i = 0; i < m; i++)
 				{
 					printf("%s\n", text[i]);
 				}
+				printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
 				for (i = 0; i < m; i++)
 				{
 					free(text[i]);
@@ -165,12 +189,18 @@ int main(int argc, char *argv[])
 					}
 					count = (int*)malloc(m * sizeof(int));
 					ScanFile(b, text, count);
-					Sort(text, count, m);
+					
+
+					start = clock();
+					quickSort(count, 0, m - 1, text);
+					end = clock();
+
 					printf("Восстановленный текст:\n");
 					for (i = 0; i < m; i++)
 					{
 						printf("%s\n", text[i]);
 					}
+					printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
 					for (i = 0; i < m; i++)
 					{
 						free(text[i]);
@@ -220,12 +250,17 @@ int main(int argc, char *argv[])
 			}
 			count = (int*)malloc(m * sizeof(int));
 			ScanFile(b, text, count);
-			Sort(text, count, m);
+
+			start = clock();
+			quickSort(count, 0, m - 1, text);
+			end = clock();
+
 			printf("Восстановленный текст:\n");
 			for (i = 0; i < m; i++)
 			{
 				printf("%s\n", text[i]);
 			}
+			printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
 			for (i = 0; i < m; i++)
 			{
 				free(text[i]);

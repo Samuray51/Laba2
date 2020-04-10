@@ -51,7 +51,7 @@ void ScanFile(FILE *b, char **text, int *count)
 void Sort(char **text, int *count, int m)
 {
 	int i = 0, n, j = 0;
-	char *str = (char*)malloc(sizeof(char));
+	char *p;
 	for (i = 0; i < m - 1; i++)
 	{
 		for (j = m - 1; j > i; j--)
@@ -61,13 +61,60 @@ void Sort(char **text, int *count, int m)
 				n = count[j - 1];
 				count[j - 1] = count[j];
 				count[j] = n;
-				str = (char*)realloc(str, count[j] * sizeof(char));
-				strcpy_s(str, count[j], text[j - 1]);
-				text[j - 1] = (char*)realloc(text[j - 1], count[j - 1] * sizeof(char));
-				strcpy_s(text[j - 1], count[j - 1], text[j]);
-				text[j] = (char*)realloc(text[j], count[j] * sizeof(char));
-				strcpy_s(text[j], count[j], str);
+
+				p = text[j - 1];
+				text[j - 1]= text[j];
+				text[j] = p;
 			}
 		}
+	}
+}
+
+
+
+
+void quickSort(int *numbers, int left, int right, char **text)
+{
+	int pivot; // разрешающий элемент
+	int l_hold = left; //левая граница
+	int r_hold = right; // правая граница
+	pivot = numbers[left];
+	char *p;
+	p = text[left];
+	while (left < right) // пока границы не сомкнутся
+	{
+		while ((numbers[right] >= pivot) && (left < right))
+		{
+			right--; // сдвигаем правую границу пока элемент [right] больше [pivot]
+		}
+		if (left != right) // если границы не сомкнулись
+		{
+			numbers[left] = numbers[right]; // перемещаем элемент [right] на место разрешающего
+			text[left] = text[right];
+			left++; // сдвигаем левую границу вправо 
+		}
+		while ((numbers[left] <= pivot) && (left < right))
+		{
+			left++; // сдвигаем левую границу пока элемент [left] меньше [pivot]
+		}
+		if (left != right) // если границы не сомкнулись
+		{
+			numbers[right] = numbers[left]; // перемещаем элемент [left] на место [right]
+			text[right] = text[left];
+			right--; // сдвигаем правую границу вправо 
+		}
+	}
+	numbers[left] = pivot; // ставим разрешающий элемент на место
+	text[left] = p;
+	pivot = left;
+	left = l_hold;
+	right = r_hold;
+	if (left < pivot) // Рекурсивно вызываем сортировку для левой и правой части массива
+	{
+		quickSort(numbers, left, pivot - 1, text);
+	}
+	if (right > pivot)
+	{
+		quickSort(numbers, pivot + 1, right, text);
 	}
 }
