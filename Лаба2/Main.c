@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <math.h>
 #include<windows.h>
 #include<locale.h>
@@ -13,9 +12,8 @@ int main(int argc, char *argv[])
 	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "RUS");
 	errno_t err;
-	clock_t start, end;
-	int m, i = 0, *count, j, n;
-	char **text, *filename, tmp;
+	int m, i = 0, j, n;
+	char *filename, tmp;
 	filename = (char*)malloc(sizeof(char));
 	printf("Нажмите 1, чтобы ввести имя с клавиатуры.\n");
 	printf("Нажмите 2, чтобы взять имя файла из файла.\n");
@@ -37,59 +35,10 @@ int main(int argc, char *argv[])
 			filename = (char*)realloc(filename, (i + 1) * sizeof(char));
 		}
 		filename[i] = '\0';
-		FILE *b;
-		err = fopen_s(&b, filename, "r");
-		if (err == NULL)
-		{
-			m = ROW(b);
-			text = (char**)malloc(m * sizeof(char*));
-			for (i = 0; i < m; i++)
-			{
-				text[i] = (char*)malloc(sizeof(char));
-			}
-			count = (int*)malloc(m * sizeof(int));
-			ScanFile(b, text, count);
-
-			/*for (i = 0; i < m; i++)
-			{
-				printf("%d ", count[i]);
-			}*/
-			//printf("\n");
-			start = clock();
-			//Sort(text, count, m);
-			quickSort(count, 0, m - 1, text);
-			end = clock();
-			
-			/*for (i = 0; i < m; i++)
-			{
-				printf("%d ", count[i]);
-			}*/
-			
-			printf("Восстановленный текст:\n");
-			/*for (i = 0; i < m; i++)
-			{
-				printf("%s\n", text[i]);
-			}*/
-
-			printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
-
-			for (i = 0; i < m; i++)
-			{
-				free(text[i]);
-			}
-			free(text);
-			free(count);
-			free(filename);
-			system("pause");
-		}
-		else if (err != NULL)
-		{
-			printf("Файл: %s\nКод ошибки: %d\n", filename, err);
-			perror("Описание ошибки");
-			system("pause");
-			exit(1);
-		}
-		fclose(b);
+		
+		Job(filename);
+		free(filename);
+		
 	}
 	else if (m == 2)
 	{
@@ -104,54 +53,11 @@ int main(int argc, char *argv[])
 				filename = (char*)realloc(filename, (i + 1) * sizeof(char));
 			}
 			filename[i-1] = '\0';
-			FILE *b;
-			err = fopen_s(&b, filename, "r");
-			if (err == NULL)
-			{
-				m = ROW(b);
-				text = (char**)malloc(m * sizeof(char*));
-				for (i = 0; i < m; i++)
-				{
-					text[i] = (char*)malloc(sizeof(char));
-				}
-				count = (int*)malloc(m * sizeof(int));
-				ScanFile(b, text, count);
-
-				start = clock();
-				quickSort(count, 0, m - 1, text);
-				end = clock();
-				
-				printf("Восстановленный текст:\n");
-				for (i = 0; i < m; i++)
-				{
-					printf("%s\n", text[i]);
-				}
-				printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
-				for (i = 0; i < m; i++)
-				{
-					free(text[i]);
-				}
-				free(text);
-				free(count);
-				free(filename);
-				system("pause");
-			}
-			else if (err != NULL)
-			{
-				printf("Файл: %s\nКод ошибки: %d\n", filename, err);
-				perror("Описание ошибки");
-				system("pause");
-				exit(1);
-			}
-			fclose(b);
+			
+			Job(filename);
+			free(filename);
 		}
-		else if (err != NULL)
-		{
-			printf("Файл: Namefile.txt\nКод ошибки: %d\n", err);
-			perror("Описание ошибки");
-			system("pause");
-			exit(1);
-		}
+		
 		fclose(NameFile);
 	}
 	else if (m == 3)
@@ -177,46 +83,8 @@ int main(int argc, char *argv[])
 					filename = (char*)realloc(filename, (i + 1) * sizeof(char));
 				}
 				filename[i - 1] = '\0';
-				FILE *b;
-				err = fopen_s(&b, filename, "r");
-				if (err == NULL)
-				{
-					m = ROW(b);
-					text = (char**)malloc(m * sizeof(char*));
-					for (i = 0; i < m; i++)
-					{
-						text[i] = (char*)malloc(sizeof(char));
-					}
-					count = (int*)malloc(m * sizeof(int));
-					ScanFile(b, text, count);
-					
 
-					start = clock();
-					quickSort(count, 0, m - 1, text);
-					end = clock();
-
-					printf("Восстановленный текст:\n");
-					for (i = 0; i < m; i++)
-					{
-						printf("%s\n", text[i]);
-					}
-					printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
-					for (i = 0; i < m; i++)
-					{
-						free(text[i]);
-					}
-					free(text);
-					free(count);
-				}
-				else if (err != NULL)
-				{
-					printf("Файл: %s\nКод ошибки: %d\n", filename, err);
-					perror("Описание ошибки");
-					system("pause");
-					continue;
-				}
-				fclose(b);
-				system("pause");
+				Job(filename);
 				system("cls");
 			}
 			free(filename);
@@ -238,45 +106,7 @@ int main(int argc, char *argv[])
 			system("pause");
 			exit(1);
 		}
-		FILE *b;
-		err = fopen_s(&b, argv[1], "r");
-		if (err == NULL)
-		{
-			m = ROW(b);
-			text = (char**)malloc(m * sizeof(char*));
-			for (i = 0; i < m; i++)
-			{
-				text[i] = (char*)malloc(sizeof(char));
-			}
-			count = (int*)malloc(m * sizeof(int));
-			ScanFile(b, text, count);
-
-			start = clock();
-			quickSort(count, 0, m - 1, text);
-			end = clock();
-
-			printf("Восстановленный текст:\n");
-			for (i = 0; i < m; i++)
-			{
-				printf("%s\n", text[i]);
-			}
-			printf("Время восстановления текста: %f секунд\n", ((float)end - start) / (float)CLOCKS_PER_SEC);
-			for (i = 0; i < m; i++)
-			{
-				free(text[i]);
-			}
-			free(text);
-			free(count);
-			system("pause");
-		}
-		else if (err != NULL)
-		{
-			printf("Файл: %s\nКод ошибки: %d\n", argv[1], err);
-			perror("Описание ошибки");
-			system("pause");
-			exit(1);
-		}
-		fclose(b);
+		Job(argv[1]);
 	}
 	else
 	{
@@ -284,12 +114,3 @@ int main(int argc, char *argv[])
 	}
 	return 0;
 }
-
-
-
-
-
-
-
-
-
